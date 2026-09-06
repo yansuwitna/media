@@ -1,0 +1,33 @@
+buatkan saya aplikasi yang terdiri dari 3 pengguna, admin dan operator 
+pengguna tersebut memiliki tabel yang berbeda - beda dan login dengan multi tabel 
+
+aplikasi ini akan digunakan untuk menyimpan rencanan media yang akan di buat
+
+admin memiliki peran 
+merubah identitas web dan membuatkan user operator
+
+operator memiliki peran 
+menambahkan data lokasi upload 
+menambah proyek 
+dalam proyek akan ada rincian 
+
+Gunakan tool 
+laravel, vue, tailwints, swwetalert, poppins
+
+desain 
+elegan, modern, gelap, terang 
+database mysql dengan losalhost, user admin password Admin!
+
+halaman home menampilkan card jumlah proyek 
+
+halaman admin dan operator memiliki sidebar di sebelah kiri 
+
+Buatkan saya file rancangan.md
+
+gunakan token seminimal mungkin 
+jangan melakukan proses npm run build karena dapat memakan token
+jangan melakukan pengujian karena memakan token 
+jangan melakukan hal yang tidak penting dan memakan token 
+hal ini dilakukan seterusnya agar minimal memakan token 
+
+tampilkan juga jumlah token yang digunakan dan sisa token 
