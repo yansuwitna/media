@@ -7,45 +7,44 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-    public function showLogin()
+    public function tampilMasuk()
     {
-        return view('auth.login');
+        return view('otentikasi.masuk');
     }
 
-    public function login(Request $request)
+    public function prosesMasuk(Request $request)
     {
         $request->validate([
-            'role' => 'required|in:admin,operator,user',
-            'login' => 'required|string',
-            'password' => 'required|string',
+            'peran' => 'required|in:admin,operator,pengguna',
+            'masukan_login' => 'required|string',
+            'kata_sandi' => 'required|string',
         ]);
 
-        $role = $request->role;
-        $guard = ($role === 'user') ? 'web' : $role;
-        $field = filter_var($request->login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+        $peran = $request->peran;
+        $penjaga = ($peran === 'pengguna') ? 'web' : $peran;
+        $kolom = filter_var($request->masukan_login, FILTER_VALIDATE_EMAIL) ? 'email' : 'nama_pengguna';
 
-        // Jika user umum hanya punya field email
-        if ($role === 'user') {
-            $credentials = ['email' => $request->login, 'password' => $request->password];
+        if ($peran === 'pengguna') {
+            $kredensial = ['email' => $request->masukan_login, 'password' => $request->kata_sandi];
         } else {
-            $credentials = [$field => $request->login, 'password' => $request->password];
+            $kredensial = [$kolom => $request->masukan_login, 'password' => $request->kata_sandi];
         }
 
-        if (Auth::guard($guard)->attempt($credentials, $request->filled('remember'))) {
+        if (Auth::guard($penjaga)->attempt($kredensial, $request->filled('ingat_saya'))) {
             $request->session()->regenerate();
 
-            if ($role === 'admin') {
-                return redirect()->intended('/admin/dashboard')->with('success', 'Selamat datang Admin!');
-            } elseif ($role === 'operator') {
-                return redirect()->intended('/operator/dashboard')->with('success', 'Selamat datang Operator!');
+            if ($peran === 'admin') {
+                return redirect()->intended('/admin/dasbor')->with('sukses', 'Selamat datang Administrator!');
+            } elseif ($peran === 'operator') {
+                return redirect()->intended('/operator/dasbor')->with('sukses', 'Selamat datang Operator!');
             }
-            return redirect()->intended('/')->with('success', 'Berhasil login!');
+            return redirect()->intended('/')->with('sukses', 'Berhasil masuk sistem!');
         }
 
-        return back()->withInput()->with('error', 'Kombinasi login dan password tidak sesuai.');
+        return back()->withInput()->with('galat', 'Kombinasi login dan kata sandi tidak cocok.');
     }
 
-    public function logout(Request $request)
+    public function keluar(Request $request)
     {
         Auth::guard('admin')->logout();
         Auth::guard('operator')->logout();
@@ -54,6 +53,6 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/')->with('success', 'Berhasil logout!');
+        return redirect('/')->with('sukses', 'Berhasil keluar dari sistem!');
     }
 }

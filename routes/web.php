@@ -6,29 +6,29 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OperatorController;
 use Illuminate\Support\Facades\Route;
 
-// Public Home
-Route::get('/', [HomeController::class, 'index'])->name('home');
+// Halaman Beranda Publik
+Route::get('/', [HomeController::class, 'indeks'])->name('beranda');
 
-// Auth Routes
-Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-Route::post('/login', [AuthController::class, 'login'])->name('login.post');
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+// Rute Otentikasi
+Route::get('/masuk', [AuthController::class, 'tampilMasuk'])->name('masuk');
+Route::post('/masuk', [AuthController::class, 'prosesMasuk'])->name('masuk.proses');
+Route::post('/keluar', [AuthController::class, 'keluar'])->name('keluar');
 
-// Admin Routes (Guard: admin)
+// Rute Khusus Admin (Guard: admin)
 Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
-    Route::post('/identity', [AdminController::class, 'updateIdentity'])->name('identity.update');
-    Route::post('/operators', [AdminController::class, 'storeOperator'])->name('operators.store');
-    Route::delete('/operators/{id}', [AdminController::class, 'destroyOperator'])->name('operators.destroy');
+    Route::get('/dasbor', [AdminController::class, 'dasbor'])->name('dasbor');
+    Route::post('/identitas', [AdminController::class, 'perbaruiIdentitas'])->name('identitas.perbarui');
+    Route::post('/operator', [AdminController::class, 'simpanOperator'])->name('operator.simpan');
+    Route::delete('/operator/{id}', [AdminController::class, 'hapusOperator'])->name('operator.hapus');
 });
 
-// Operator Routes (Guard: operator)
+// Rute Khusus Operator (Guard: operator)
 Route::middleware('auth:operator')->prefix('operator')->name('operator.')->group(function () {
-    Route::get('/dashboard', [OperatorController::class, 'dashboard'])->name('dashboard');
-    Route::post('/locations', [OperatorController::class, 'storeLocation'])->name('locations.store');
-    Route::delete('/locations/{id}', [OperatorController::class, 'destroyLocation'])->name('locations.destroy');
-    Route::post('/projects', [OperatorController::class, 'storeProject'])->name('projects.store');
-    Route::delete('/projects/{id}', [OperatorController::class, 'destroyProject'])->name('projects.destroy');
-    Route::post('/projects/{projectId}/details', [OperatorController::class, 'storeDetail'])->name('details.store');
-    Route::delete('/details/{id}', [OperatorController::class, 'destroyDetail'])->name('details.destroy');
+    Route::get('/dasbor', [OperatorController::class, 'dasbor'])->name('dasbor');
+    Route::post('/lokasi', [OperatorController::class, 'simpanLokasi'])->name('lokasi.simpan');
+    Route::delete('/lokasi/{id}', [OperatorController::class, 'hapusLokasi'])->name('lokasi.hapus');
+    Route::post('/proyek', [OperatorController::class, 'simpanProyek'])->name('proyek.simpan');
+    Route::delete('/proyek/{id}', [OperatorController::class, 'hapusProyek'])->name('proyek.hapus');
+    Route::post('/proyek/{idProyek}/rincian', [OperatorController::class, 'simpanRincian'])->name('rincian.simpan');
+    Route::delete('/rincian/{id}', [OperatorController::class, 'hapusRincian'])->name('rincian.hapus');
 });

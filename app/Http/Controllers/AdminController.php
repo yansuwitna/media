@@ -3,63 +3,63 @@
 namespace App\Http\Controllers;
 
 use App\Models\Operator;
-use App\Models\Project;
-use App\Models\WebIdentity;
+use App\Models\Proyek;
+use App\Models\IdentitasWeb;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
 {
-    public function dashboard()
+    public function dasbor()
     {
-        $identity = WebIdentity::first();
-        $totalOperators = Operator::count();
-        $totalProjects = Project::count();
-        $operators = Operator::latest()->get();
+        $identitas = IdentitasWeb::first();
+        $totalOperator = Operator::count();
+        $totalProyek = Proyek::count();
+        $daftarOperator = Operator::latest()->get();
 
-        return view('admin.dashboard', compact('identity', 'totalOperators', 'totalProjects', 'operators'));
+        return view('admin.dasbor', compact('identitas', 'totalOperator', 'totalProyek', 'daftarOperator'));
     }
 
-    public function updateIdentity(Request $request)
+    public function perbaruiIdentitas(Request $request)
     {
         $request->validate([
-            'app_name' => 'required|string|max:100',
-            'app_description' => 'nullable|string',
-            'footer_text' => 'nullable|string|max:150',
-            'theme_default' => 'required|in:light,dark',
+            'nama_aplikasi' => 'required|string|max:100',
+            'deskripsi_aplikasi' => 'nullable|string',
+            'teks_footer' => 'nullable|string|max:150',
+            'tema_bawaan' => 'required|in:terang,gelap',
         ]);
 
-        $identity = WebIdentity::firstOrCreate(['id' => 1]);
-        $identity->update($request->only('app_name', 'app_description', 'footer_text', 'theme_default'));
+        $identitas = IdentitasWeb::firstOrCreate(['id' => 1]);
+        $identitas->update($request->only('nama_aplikasi', 'deskripsi_aplikasi', 'teks_footer', 'tema_bawaan'));
 
-        return back()->with('success', 'Identitas Website berhasil diperbarui!');
+        return back()->with('sukses', 'Identitas website berhasil diperbarui!');
     }
 
-    public function storeOperator(Request $request)
+    public function simpanOperator(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:100',
-            'username' => 'required|string|unique:operators,username|max:50',
-            'email' => 'required|email|unique:operators,email|max:100',
-            'password' => 'required|string|min:6',
+            'nama' => 'required|string|max:100',
+            'nama_pengguna' => 'required|string|unique:operator,nama_pengguna|max:50',
+            'email' => 'required|email|unique:operator,email|max:100',
+            'kata_sandi' => 'required|string|min:6',
         ]);
 
         Operator::create([
-            'name' => $request->name,
-            'username' => $request->username,
+            'nama' => $request->nama,
+            'nama_pengguna' => $request->nama_pengguna,
             'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'created_by_admin_id' => auth('admin')->id(),
+            'kata_sandi' => Hash::make($request->kata_sandi),
+            'id_admin_pembuat' => auth('admin')->id(),
         ]);
 
-        return back()->with('success', 'Operator baru berhasil ditambahkan!');
+        return back()->with('sukses', 'Akun operator baru berhasil didaftarkan!');
     }
 
-    public function destroyOperator($id)
+    public function hapusOperator($id)
     {
         $operator = Operator::findOrFail($id);
         $operator->delete();
 
-        return back()->with('success', 'Operator berhasil dihapus!');
+        return back()->with('sukses', 'Akun operator berhasil dihapus!');
     }
 }

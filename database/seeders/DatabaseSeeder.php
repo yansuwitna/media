@@ -5,10 +5,10 @@ namespace Database\Seeders;
 use App\Models\Admin;
 use App\Models\Operator;
 use App\Models\User;
-use App\Models\WebIdentity;
-use App\Models\UploadLocation;
-use App\Models\Project;
-use App\Models\ProjectDetail;
+use App\Models\IdentitasWeb;
+use App\Models\LokasiUnggah;
+use App\Models\Proyek;
+use App\Models\RincianProyek;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -16,89 +16,89 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // 1. User Umum / Superadmin
+        // 1. Pengguna Umum
         User::firstOrCreate(
-            ['email' => 'user@example.com'],
+            ['email' => 'pengguna@media.local'],
             [
-                'name' => 'General User',
+                'name' => 'Pengguna Umum',
                 'password' => Hash::make('password'),
             ]
         );
 
         // 2. Admin
         $admin = Admin::firstOrCreate(
-            ['username' => 'admin'],
+            ['nama_pengguna' => 'admin'],
             [
-                'name' => 'Administrator',
+                'nama' => 'Administrator Utama',
                 'email' => 'admin@media.local',
-                'password' => Hash::make('Admin!'),
+                'kata_sandi' => Hash::make('Admin!'),
             ]
         );
 
         // 3. Operator
         $operator = Operator::firstOrCreate(
-            ['username' => 'operator'],
+            ['nama_pengguna' => 'operator'],
             [
-                'name' => 'Operator Media',
+                'nama' => 'Operator Media',
                 'email' => 'operator@media.local',
-                'password' => Hash::make('operator123'),
-                'created_by_admin_id' => $admin->id,
+                'kata_sandi' => Hash::make('operator123'),
+                'id_admin_pembuat' => $admin->id,
             ]
         );
 
-        // 4. Web Identity
-        WebIdentity::firstOrCreate(
+        // 4. Identitas Web
+        IdentitasWeb::firstOrCreate(
             ['id' => 1],
             [
-                'app_name' => 'Media Planner Hub',
-                'app_description' => 'Aplikasi Manajemen Perencanaan Media Digital & Publikasi Multi-Platform.',
-                'footer_text' => '© 2026 Media Planner Hub. All rights reserved.',
-                'theme_default' => 'dark',
+                'nama_aplikasi' => 'Rencana Media Hub',
+                'deskripsi_aplikasi' => 'Aplikasi Manajemen Perencanaan Media Digital dan Distribusi Kanal Publikasi.',
+                'teks_footer' => '© 2026 Rencana Media Hub. Hak cipta dilindungi.',
+                'tema_bawaan' => 'gelap',
             ]
         );
 
-        // 5. Upload Locations
-        $loc1 = UploadLocation::firstOrCreate(
-            ['operator_id' => $operator->id, 'name' => 'YouTube Channel Official'],
-            ['url' => 'https://youtube.com', 'description' => 'Kanal video utama untuk video teaser dan materi panjang.']
+        // 5. Lokasi Unggah
+        $lok1 = LokasiUnggah::firstOrCreate(
+            ['id_operator' => $operator->id, 'nama_kanal' => 'YouTube Resmi'],
+            ['tautan' => 'https://youtube.com', 'keterangan' => 'Kanal video utama untuk teaser dan video panjang.']
         );
-        $loc2 = UploadLocation::firstOrCreate(
-            ['operator_id' => $operator->id, 'name' => 'Instagram Reels / Feeds'],
-            ['url' => 'https://instagram.com', 'description' => 'Akun Instagram official brand.']
+        $lok2 = LokasiUnggah::firstOrCreate(
+            ['id_operator' => $operator->id, 'nama_kanal' => 'Instagram Feeds & Reels'],
+            ['tautan' => 'https://instagram.com', 'keterangan' => 'Publikasi infografis visual dan konten reel.']
         );
-        $loc3 = UploadLocation::firstOrCreate(
-            ['operator_id' => $operator->id, 'name' => 'TikTok Channel'],
-            ['url' => 'https://tiktok.com', 'description' => 'Konten video pendek vertikal dan tren.']
+        $lok3 = LokasiUnggah::firstOrCreate(
+            ['id_operator' => $operator->id, 'nama_kanal' => 'TikTok Official'],
+            ['tautan' => 'https://tiktok.com', 'keterangan' => 'Video vertikal pendek interaktif.']
         );
 
-        // 6. Projects
-        $project = Project::firstOrCreate(
-            ['operator_id' => $operator->id, 'title' => 'Peluncuran Produk Baru Q3'],
+        // 6. Proyek
+        $proyek = Proyek::firstOrCreate(
+            ['id_operator' => $operator->id, 'judul_proyek' => 'Peluncuran Produk Kreatif Q3'],
             [
-                'description' => 'Kampanye peluncuran lini produk kreatif di media sosial.',
-                'target_date' => '2026-10-15',
-                'status' => 'in_progress',
+                'deskripsi_proyek' => 'Kampanye terintegrasi peluncuran inovasi produk di berbagai kanal digital.',
+                'target_selesai' => '2026-10-20',
+                'status_proyek' => 'dalam_proses',
             ]
         );
 
-        // 7. Project Details
-        ProjectDetail::firstOrCreate(
-            ['project_id' => $project->id, 'item_name' => 'Video Teaser 30 Detik'],
+        // 7. Rincian Proyek
+        RincianProyek::firstOrCreate(
+            ['id_proyek' => $proyek->id, 'nama_item' => 'Video Teaser Utama 30 Detik'],
             [
-                'upload_location_id' => $loc1->id,
-                'media_type' => 'video',
-                'notes' => 'Format 16:9 resolusi 4K dengan subtitle.',
-                'status' => 'ready',
+                'id_lokasi_unggah' => $lok1->id,
+                'jenis_media' => 'video',
+                'catatan' => 'Rasio 16:9 resolusi 4K dengan subtitle bahasa Indonesia.',
+                'status_unggah' => 'siap_unggah',
             ]
         );
 
-        ProjectDetail::firstOrCreate(
-            ['project_id' => $project->id, 'item_name' => 'Poster Teaser Feed Instagram'],
+        RincianProyek::firstOrCreate(
+            ['id_proyek' => $proyek->id, 'nama_item' => 'Poster Teaser Feed Instagram'],
             [
-                'upload_location_id' => $loc2->id,
-                'media_type' => 'image',
-                'notes' => 'Resolusi 1080x1350 px, palet warna elegan gelap.',
-                'status' => 'uploaded',
+                'id_lokasi_unggah' => $lok2->id,
+                'jenis_media' => 'gambar',
+                'catatan' => 'Rasio 4:5 resolusi tinggi palet gelap elegan.',
+                'status_unggah' => 'terunggah',
             ]
         );
     }

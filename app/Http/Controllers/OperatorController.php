@@ -2,111 +2,111 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Project;
-use App\Models\ProjectDetail;
-use App\Models\UploadLocation;
-use App\Models\WebIdentity;
+use App\Models\Proyek;
+use App\Models\RincianProyek;
+use App\Models\LokasiUnggah;
+use App\Models\IdentitasWeb;
 use Illuminate\Http\Request;
 
 class OperatorController extends Controller
 {
-    public function dashboard()
+    public function dasbor()
     {
-        $identity = WebIdentity::first();
+        $identitas = IdentitasWeb::first();
         $operator = auth('operator')->user();
         
-        $projects = Project::where('operator_id', $operator->id)->with('details.uploadLocation')->latest()->get();
-        $uploadLocations = UploadLocation::where('operator_id', $operator->id)->latest()->get();
+        $daftarProyek = Proyek::where('id_operator', $operator->id)->with('rincian.lokasiUnggah')->latest()->get();
+        $daftarLokasiUnggah = LokasiUnggah::where('id_operator', $operator->id)->latest()->get();
 
-        return view('operator.dashboard', compact('identity', 'operator', 'projects', 'uploadLocations'));
+        return view('operator.dasbor', compact('identitas', 'operator', 'daftarProyek', 'daftarLokasiUnggah'));
     }
 
-    public function storeLocation(Request $request)
+    public function simpanLokasi(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:100',
-            'url' => 'nullable|url',
-            'description' => 'nullable|string',
+            'nama_kanal' => 'required|string|max:100',
+            'tautan' => 'nullable|url',
+            'keterangan' => 'nullable|string',
         ]);
 
-        UploadLocation::create([
-            'operator_id' => auth('operator')->id(),
-            'name' => $request->name,
-            'url' => $request->url,
-            'description' => $request->description,
+        LokasiUnggah::create([
+            'id_operator' => auth('operator')->id(),
+            'nama_kanal' => $request->nama_kanal,
+            'tautan' => $request->tautan,
+            'keterangan' => $request->keterangan,
         ]);
 
-        return back()->with('success', 'Lokasi Upload baru berhasil ditambahkan!');
+        return back()->with('sukses', 'Lokasi/Kanal unggah berhasil disimpan!');
     }
 
-    public function destroyLocation($id)
+    public function hapusLokasi($id)
     {
-        $location = UploadLocation::where('operator_id', auth('operator')->id())->findOrFail($id);
-        $location->delete();
+        $lokasi = LokasiUnggah::where('id_operator', auth('operator')->id())->findOrFail($id);
+        $lokasi->delete();
 
-        return back()->with('success', 'Lokasi Upload berhasil dihapus!');
+        return back()->with('sukses', 'Lokasi unggah berhasil dihapus!');
     }
 
-    public function storeProject(Request $request)
+    public function simpanProyek(Request $request)
     {
         $request->validate([
-            'title' => 'required|string|max:150',
-            'description' => 'nullable|string',
-            'target_date' => 'nullable|date',
-            'status' => 'required|in:draft,in_progress,completed,cancelled',
+            'judul_proyek' => 'required|string|max:150',
+            'deskripsi_proyek' => 'nullable|string',
+            'target_selesai' => 'nullable|date',
+            'status_proyek' => 'required|in:draf,dalam_proses,selesai,dibatalkan',
         ]);
 
-        Project::create([
-            'operator_id' => auth('operator')->id(),
-            'title' => $request->title,
-            'description' => $request->description,
-            'target_date' => $request->target_date,
-            'status' => $request->status,
+        Proyek::create([
+            'id_operator' => auth('operator')->id(),
+            'judul_proyek' => $request->judul_proyek,
+            'deskripsi_proyek' => $request->deskripsi_proyek,
+            'target_selesai' => $request->target_selesai,
+            'status_proyek' => $request->status_proyek,
         ]);
 
-        return back()->with('success', 'Proyek Rencana Media baru berhasil dibuat!');
+        return back()->with('sukses', 'Proyek rencana media baru berhasil dibuat!');
     }
 
-    public function destroyProject($id)
+    public function hapusProyek($id)
     {
-        $project = Project::where('operator_id', auth('operator')->id())->findOrFail($id);
-        $project->delete();
+        $proyek = Proyek::where('id_operator', auth('operator')->id())->findOrFail($id);
+        $proyek->delete();
 
-        return back()->with('success', 'Proyek berhasil dihapus!');
+        return back()->with('sukses', 'Proyek rencana media berhasil dihapus!');
     }
 
-    public function storeDetail(Request $request, $projectId)
+    public function simpanRincian(Request $request, $idProyek)
     {
-        $project = Project::where('operator_id', auth('operator')->id())->findOrFail($projectId);
+        $proyek = Proyek::where('id_operator', auth('operator')->id())->findOrFail($idProyek);
 
         $request->validate([
-            'item_name' => 'required|string|max:150',
-            'upload_location_id' => 'nullable|exists:upload_locations,id',
-            'media_type' => 'required|in:video,image,audio,article,other',
-            'notes' => 'nullable|string',
-            'status' => 'required|in:pending,ready,uploaded',
+            'nama_item' => 'required|string|max:150',
+            'id_lokasi_unggah' => 'nullable|exists:lokasi_unggah,id',
+            'jenis_media' => 'required|in:video,gambar,audio,artikel,lainnya',
+            'catatan' => 'nullable|string',
+            'status_unggah' => 'required|in:menunggu,siap_unggah,terunggah',
         ]);
 
-        ProjectDetail::create([
-            'project_id' => $project->id,
-            'upload_location_id' => $request->upload_location_id,
-            'item_name' => $request->item_name,
-            'media_type' => $request->media_type,
-            'notes' => $request->notes,
-            'status' => $request->status,
+        RincianProyek::create([
+            'id_proyek' => $proyek->id,
+            'id_lokasi_unggah' => $request->id_lokasi_unggah,
+            'nama_item' => $request->nama_item,
+            'jenis_media' => $request->jenis_media,
+            'catatan' => $request->catatan,
+            'status_unggah' => $request->status_unggah,
         ]);
 
-        return back()->with('success', 'Rincian konten proyek berhasil ditambahkan!');
+        return back()->with('sukses', 'Rincian konten berhasil ditambahkan ke proyek!');
     }
 
-    public function destroyDetail($id)
+    public function hapusRincian($id)
     {
-        $detail = ProjectDetail::whereHas('project', function ($q) {
-            $q->where('operator_id', auth('operator')->id());
+        $rincian = RincianProyek::whereHas('proyek', function ($q) {
+            $q->where('id_operator', auth('operator')->id());
         })->findOrFail($id);
 
-        $detail->delete();
+        $rincian->delete();
 
-        return back()->with('success', 'Rincian konten berhasil dihapus!');
+        return back()->with('sukses', 'Rincian konten berhasil dihapus!');
     }
 }

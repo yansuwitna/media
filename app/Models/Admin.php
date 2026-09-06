@@ -9,22 +9,22 @@ class Admin extends Authenticatable
 {
     use Notifiable;
 
+    protected $table = 'admin';
+
     protected $fillable = [
-        'name',
-        'username',
+        'nama',
+        'nama_pengguna',
         'email',
-        'password',
+        'kata_sandi',
     ];
 
     protected $hidden = [
-        'password',
+        'kata_sandi',
         'remember_token',
     ];
 
-    protected function casts(): array
+    public function getAuthPassword()
     {
-        return [
-            'password' => 'hashed',
-        ];
+        return $this->kata_sandi;
     }
 }

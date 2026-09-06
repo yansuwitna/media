@@ -10,33 +10,33 @@ class Operator extends Authenticatable
 {
     use Notifiable;
 
+    protected $table = 'operator';
+
     protected $fillable = [
-        'name',
-        'username',
+        'nama',
+        'nama_pengguna',
         'email',
-        'password',
-        'created_by_admin_id',
+        'kata_sandi',
+        'id_admin_pembuat',
     ];
 
     protected $hidden = [
-        'password',
+        'kata_sandi',
         'remember_token',
     ];
 
-    protected function casts(): array
+    public function getAuthPassword()
     {
-        return [
-            'password' => 'hashed',
-        ];
+        return $this->kata_sandi;
     }
 
-    public function projects(): HasMany
+    public function daftarProyek(): HasMany
     {
-        return $this->hasMany(Project::class);
+        return $this->hasMany(Proyek::class, 'id_operator');
     }
 
-    public function uploadLocations(): HasMany
+    public function daftarLokasiUnggah(): HasMany
     {
-        return $this->hasMany(UploadLocation::class);
+        return $this->hasMany(LokasiUnggah::class, 'id_operator');
     }
 }

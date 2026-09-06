@@ -8,75 +8,81 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('admins', function (Blueprint $table) {
+        // 1. Tabel Admin
+        Schema::create('admin', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('username')->unique();
+            $table->string('nama');
+            $table->string('nama_pengguna')->unique();
             $table->string('email')->unique();
-            $table->string('password');
+            $table->string('kata_sandi');
             $table->rememberToken();
             $table->timestamps();
         });
 
-        Schema::create('operators', function (Blueprint $table) {
+        // 2. Tabel Operator
+        Schema::create('operator', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('username')->unique();
+            $table->string('nama');
+            $table->string('nama_pengguna')->unique();
             $table->string('email')->unique();
-            $table->string('password');
-            $table->foreignId('created_by_admin_id')->nullable()->constrained('admins')->nullOnDelete();
+            $table->string('kata_sandi');
+            $table->foreignId('id_admin_pembuat')->nullable()->constrained('admin')->nullOnDelete();
             $table->rememberToken();
             $table->timestamps();
         });
 
-        Schema::create('web_identities', function (Blueprint $table) {
+        // 3. Tabel Identitas Web
+        Schema::create('identitas_web', function (Blueprint $table) {
             $table->id();
-            $table->string('app_name')->default('Media Plan App');
-            $table->text('app_description')->nullable();
-            $table->string('logo_path')->nullable();
-            $table->string('footer_text')->default('© 2026 Media Plan. All rights reserved.');
-            $table->string('theme_default')->default('light');
+            $table->string('nama_aplikasi')->default('Media Plan App');
+            $table->text('deskripsi_aplikasi')->nullable();
+            $table->string('jalur_logo')->nullable();
+            $table->string('teks_footer')->default('© 2026 Media Plan. Hak cipta dilindungi.');
+            $table->string('tema_bawaan')->default('gelap');
             $table->timestamps();
         });
 
-        Schema::create('upload_locations', function (Blueprint $table) {
+        // 4. Tabel Lokasi Unggah
+        Schema::create('lokasi_unggah', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('operator_id')->constrained('operators')->cascadeOnDelete();
-            $table->string('name');
-            $table->string('url')->nullable();
-            $table->text('description')->nullable();
+            $table->foreignId('id_operator')->constrained('operator')->cascadeOnDelete();
+            $table->string('nama_kanal');
+            $table->string('tautan')->nullable();
+            $table->text('keterangan')->nullable();
             $table->timestamps();
         });
 
-        Schema::create('projects', function (Blueprint $table) {
+        // 5. Tabel Proyek
+        Schema::create('proyek', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('operator_id')->constrained('operators')->cascadeOnDelete();
-            $table->string('title');
-            $table->text('description')->nullable();
-            $table->date('target_date')->nullable();
-            $table->enum('status', ['draft', 'in_progress', 'completed', 'cancelled'])->default('draft');
+            $table->foreignId('id_operator')->constrained('operator')->cascadeOnDelete();
+            $table->string('judul_proyek');
+            $table->text('deskripsi_proyek')->nullable();
+            $table->date('target_selesai')->nullable();
+            $table->enum('status_proyek', ['draf', 'dalam_proses', 'selesai', 'dibatalkan'])->default('draf');
             $table->timestamps();
         });
 
-        Schema::create('project_details', function (Blueprint $table) {
+        // 6. Tabel Rincian Proyek
+        Schema::create('rincian_proyek', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('project_id')->constrained('projects')->cascadeOnDelete();
-            $table->foreignId('upload_location_id')->nullable()->constrained('upload_locations')->nullOnDelete();
-            $table->string('item_name');
-            $table->enum('media_type', ['video', 'image', 'audio', 'article', 'other'])->default('video');
-            $table->text('notes')->nullable();
-            $table->enum('status', ['pending', 'ready', 'uploaded'])->default('pending');
+            $table->foreignId('id_proyek')->constrained('proyek')->cascadeOnDelete();
+            $table->foreignId('id_lokasi_unggah')->nullable()->constrained('lokasi_unggah')->nullOnDelete();
+            $table->string('nama_item');
+            $table->enum('jenis_media', ['video', 'gambar', 'audio', 'artikel', 'lainnya'])->default('video');
+            $table->text('catatan')->nullable();
+            $table->enum('status_unggah', ['menunggu', 'siap_unggah', 'terunggah'])->default('menunggu');
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('project_details');
-        Schema::dropIfExists('projects');
-        Schema::dropIfExists('upload_locations');
-        Schema::dropIfExists('web_identities');
-        Schema::dropIfExists('operators');
-        Schema::dropIfExists('admins');
+        Schema::dropIfExists('rincian_proyek');
+        Schema::dropIfExists('proyek');
+        Schema::dropIfExists('lokasi_unggah');
+        Schema::dropIfExists('identitas_web');
+        Schema::dropIfExists('operator');
+        Schema::dropIfExists('admin');
     }
 };
