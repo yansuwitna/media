@@ -12,10 +12,14 @@ class RincianProyek extends Model
     protected $fillable = [
         'id_proyek',
         'id_lokasi_unggah',
+        'kode',
+        'urutan',
         'nama_item',
+        'deskripsi',
         'jenis_media',
         'catatan',
         'status_unggah',
+        'tautan_konten',
     ];
 
     public function proyek(): BelongsTo
@@ -26,5 +30,10 @@ class RincianProyek extends Model
     public function lokasiUnggah(): BelongsTo
     {
         return $this->belongsTo(LokasiUnggah::class, 'id_lokasi_unggah');
+    }
+
+    public function kanals(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(KontenKanal::class, 'id_rincian_proyek');
     }
 }

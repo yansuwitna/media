@@ -20,4 +20,9 @@ class LokasiUnggah extends Model
     {
         return $this->belongsTo(Operator::class, 'id_operator');
     }
+
+    public function rincian()
+    {
+        return $this->hasMany(RincianProyek::class, 'id_lokasi_unggah');
+    }
 }

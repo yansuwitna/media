@@ -15,9 +15,15 @@ class AdminController extends Controller
         $identitas = IdentitasWeb::first();
         $totalOperator = Operator::count();
         $totalProyek = Proyek::count();
-        $daftarOperator = Operator::latest()->get();
+        $proyekTerbaru = Proyek::with(['operator', 'rincian'])->latest()->take(5)->get();
 
-        return view('admin.dasbor', compact('identitas', 'totalOperator', 'totalProyek', 'daftarOperator'));
+        return view('admin.dasbor', compact('identitas', 'totalOperator', 'totalProyek', 'proyekTerbaru'));
+    }
+
+    public function identitas()
+    {
+        $identitas = IdentitasWeb::first();
+        return view('admin.identitas', compact('identitas'));
     }
 
     public function perbaruiIdentitas(Request $request)
@@ -33,6 +39,13 @@ class AdminController extends Controller
         $identitas->update($request->only('nama_aplikasi', 'deskripsi_aplikasi', 'teks_footer', 'tema_bawaan'));
 
         return back()->with('sukses', 'Identitas website berhasil diperbarui!');
+    }
+
+    public function operator()
+    {
+        $identitas = IdentitasWeb::first();
+        $daftarOperator = Operator::latest()->get();
+        return view('admin.operator', compact('identitas', 'daftarOperator'));
     }
 
     public function simpanOperator(Request $request)
