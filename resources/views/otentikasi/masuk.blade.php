@@ -72,13 +72,6 @@
             </button>
         </form>
 
-        <div class="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800 text-center text-xs text-slate-400">
-            <span class="font-bold text-slate-600 dark:text-slate-300 block mb-1">Akun Contoh:</span>
-            <div class="flex justify-center gap-3 mt-1 text-[11px] font-medium">
-                <span class="px-3 py-1 bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 rounded-xl">Admin: admin / Admin!</span>
-                <span class="px-3 py-1 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 rounded-xl">Op: operator / operator123</span>
-            </div>
-        </div>
     </div>
 </div>
 @endsection

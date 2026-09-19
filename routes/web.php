@@ -22,6 +22,8 @@ Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function
     Route::get('/operator', [AdminController::class, 'operator'])->name('operator');
     Route::post('/operator', [AdminController::class, 'simpanOperator'])->name('operator.simpan');
     Route::delete('/operator/{id}', [AdminController::class, 'hapusOperator'])->name('operator.hapus');
+    Route::get('/kata-sandi', [AdminController::class, 'kataSandi'])->name('kata-sandi');
+    Route::post('/kata-sandi', [AdminController::class, 'perbaruiKataSandi'])->name('kata-sandi.perbarui');
 });
 
 // Rute Operator (Terpisah per Halaman: Dasbor, Proyek, Kanal Unggah)

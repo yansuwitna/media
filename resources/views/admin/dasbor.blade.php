@@ -32,6 +32,9 @@
                 <a href="{{ route('admin.operator') }}" class="flex items-center gap-3 px-4 py-3.5 rounded-2xl text-slate-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-indigo-950/40 hover:text-indigo-600 transition">
                     <i data-lucide="users" class="w-4 h-4 text-slate-400"></i> Kelola Operator
                 </a>
+                <a href="{{ route('admin.kata-sandi') }}" class="flex items-center gap-3 px-4 py-3.5 rounded-2xl text-slate-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-indigo-950/40 hover:text-indigo-600 transition">
+                    <i data-lucide="key-round" class="w-4 h-4 text-slate-400"></i> Ubah Kata Sandi
+                </a>
             </nav>
         </div>
 

@@ -212,6 +212,9 @@
                     <a href="{{ route('admin.operator') }}" @click="menuTerbuka = false" class="flex items-center gap-3 px-4 py-3.5 rounded-2xl text-slate-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-slate-800 hover:text-indigo-600 transition">
                         <i data-lucide="users" class="w-4 h-4 text-slate-400"></i> Kelola Operator
                     </a>
+                    <a href="{{ route('admin.kata-sandi') }}" @click="menuTerbuka = false" class="flex items-center gap-3 px-4 py-3.5 rounded-2xl text-slate-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-slate-800 hover:text-indigo-600 transition">
+                        <i data-lucide="key-round" class="w-4 h-4 text-slate-400"></i> Ubah Kata Sandi
+                    </a>
                 @elseif(auth('operator')->check())
                     <div class="p-4 rounded-3xl bg-emerald-50/80 dark:bg-emerald-950/40 border border-emerald-100 dark:border-emerald-900/60 my-4">
                         <span class="font-black text-emerald-600 dark:text-emerald-400 block text-xs">{{ auth('operator')->user()->nama }}</span>

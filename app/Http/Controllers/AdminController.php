@@ -75,4 +75,34 @@ class AdminController extends Controller
 
         return back()->with('sukses', 'Akun operator berhasil dihapus!');
     }
+
+    public function kataSandi()
+    {
+        $identitas = IdentitasWeb::first();
+        return view('admin.kata_sandi', compact('identitas'));
+    }
+
+    public function perbaruiKataSandi(Request $request)
+    {
+        $request->validate([
+            'kata_sandi_lama' => 'required',
+            'kata_sandi_baru' => 'required|string|min:6|confirmed',
+        ], [
+            'kata_sandi_lama.required' => 'Kata sandi saat ini wajib diisi.',
+            'kata_sandi_baru.required' => 'Kata sandi baru wajib diisi.',
+            'kata_sandi_baru.min' => 'Kata sandi baru minimal 6 karakter.',
+            'kata_sandi_baru.confirmed' => 'Konfirmasi kata sandi baru tidak cocok.',
+        ]);
+
+        $admin = auth('admin')->user();
+
+        if (!Hash::check($request->kata_sandi_lama, $admin->kata_sandi)) {
+            return back()->with('galat', 'Kata sandi saat ini tidak cocok!');
+        }
+
+        $admin->kata_sandi = Hash::make($request->kata_sandi_baru);
+        $admin->save();
+
+        return back()->with('sukses', 'Kata sandi berhasil diperbarui!');
+    }
 }
